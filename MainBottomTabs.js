@@ -22,6 +22,7 @@ import WalletDetails from './screen/wallets/details';
 import WalletExport from './screen/wallets/export';
 import WalletXpub from './screen/wallets/xpub';
 import BuyBitcoin from './screen/wallets/buyBitcoin';
+import HodlHodl from './screen/wallets/hodlHodl';
 import Marketplace from './screen/wallets/marketplace';
 import ReorderWallets from './screen/wallets/reorderWallets';
 import SelectWallet from './screen/wallets/selectWallet';
@@ -295,6 +296,9 @@ const MainBottomTabs = createStackNavigator(
     },
     BuyBitcoin: {
       screen: BuyBitcoin,
+    },
+    HodlHodl: {
+      screen: HodlHodl,
     },
     Marketplace: {
       screen: Marketplace,
