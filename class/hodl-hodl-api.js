@@ -52,11 +52,11 @@ export class HodlHodlApi {
     });
 
     let json = response.body;
-    if (typeof json === 'undefined' || !json.countries) {
+    if (!json || !json.countries) {
       throw new Error('API failure: ' + JSON.stringify(response));
     }
 
-    if (json && json.status && json.status === 'error') {
+    if (json.status === 'error') {
       console.warn(json);
       throw new Error('API: ' + json.error + ' (code ' + json.error_code + ')');
     }
@@ -99,11 +99,11 @@ export class HodlHodlApi {
     });
 
     let json = response.body;
-    if (typeof json === 'undefined' || !json.offers) {
+    if (!json || !json.offers) {
       throw new Error('API failure: ' + JSON.stringify(response));
     }
 
-    if (json && json.status && json.status === 'error') {
+    if (json.status === 'error') {
       console.warn(json);
       throw new Error('API: ' + json.error + ' (code ' + json.error_code + ')');
     }
