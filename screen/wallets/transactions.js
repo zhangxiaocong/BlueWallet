@@ -221,7 +221,7 @@ export default class WalletTransactions extends Component {
            */}
           {this.renderMarketplaceButton()}
           {this.state.wallet.type === LightningCustodianWallet.type && Platform.OS === 'ios' && this.renderLappBrowserButton()}
-          {this.renderHodlHodlButton()}
+          {this.state.wallet.allowHodlHodlTrading() && this.renderHodlHodlButton()}
         </View>
         <Text
           style={{
@@ -393,7 +393,7 @@ export default class WalletTransactions extends Component {
           alignItems: 'center',
         }}
       >
-        <Text style={{ color: '#062453', fontSize: 18 }}>Local Trader</Text>
+        <Text style={{ color: '#062453', fontSize: 18 }}>P2P Trader</Text>
       </TouchableOpacity>
     );
   };

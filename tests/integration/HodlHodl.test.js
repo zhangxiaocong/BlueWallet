@@ -112,4 +112,13 @@ describe('HodlHodl API', function() {
     assert.ok(offers[0].price);
     assert.ok(offers[0].payment_methods);
   });
+
+  it('can get payment methods', async () => {
+    let Hodl = new HodlHodlApi();
+    const methods = await Hodl.getPaymentMethods(HodlHodlApi.FILTERS_COUNTRY_VALUE_GLOBAL);
+    assert.ok(methods[0]);
+    assert.ok(methods[0].id);
+    assert.ok(methods[0].type);
+    assert.ok(methods[0].name);
+  });
 });

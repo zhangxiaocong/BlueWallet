@@ -42,23 +42,22 @@ export class HodlHodlApi {
     this._api = new Frisbee({ baseURI: this.baseURI });
   }
 
-  async getCountries() {
-    let response = await this._api.get('/api/v1/countries', {
+  _getHeaders() {
+    return {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + this.apiKey,
       },
-    });
+    };
+  }
+
+  async getCountries() {
+    let response = await this._api.get('/api/v1/countries', this._getHeaders());
 
     let json = response.body;
-    if (!json || !json.countries) {
+    if (!json || !json.countries || json.status === 'error') {
       throw new Error('API failure: ' + JSON.stringify(response));
-    }
-
-    if (json.status === 'error') {
-      console.warn(json);
-      throw new Error('API: ' + json.error + ' (code ' + json.error_code + ')');
     }
 
     return (this._countries = json.countries);
@@ -79,6 +78,17 @@ export class HodlHodlApi {
     return (this._myCountryCode = body);
   }
 
+  async getPaymentMethods(country) {
+    let response = await this._api.get('/api/v1/payment_methods?filters[country]=' + country, this._getHeaders());
+
+    let json = response.body;
+    if (!json || !json.payment_methods || json.status === 'error') {
+      throw new Error('API failure: ' + JSON.stringify(response));
+    }
+
+    return (this._payment_methods = json.payment_methods);
+  }
+
   async getOffers(pagination = {}, filters = {}, sort = {}) {
     let uri = [];
     for (let key in sort) {
@@ -90,22 +100,11 @@ export class HodlHodlApi {
     for (let key in pagination) {
       uri.push('pagination[' + key + ']=' + pagination[key]);
     }
-    let response = await this._api.get('/api/v1/offers?' + uri.join('&'), {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + this.apiKey,
-      },
-    });
+    let response = await this._api.get('/api/v1/offers?' + uri.join('&'), this._getHeaders());
 
     let json = response.body;
-    if (!json || !json.offers) {
+    if (!json || !json.offers || json.status === 'error') {
       throw new Error('API failure: ' + JSON.stringify(response));
-    }
-
-    if (json.status === 'error') {
-      console.warn(json);
-      throw new Error('API: ' + json.error + ' (code ' + json.error_code + ')');
     }
 
     return (this._offers = json.offers);

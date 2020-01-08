@@ -1,6 +1,6 @@
 /* global alert */
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableHighlight } from 'react-native';
+import { Linking, StyleSheet, View, Text, FlatList, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { BlueNavigationStyle, BlueLoading, BlueCard } from '../../BlueComponents';
 import PropTypes from 'prop-types';
 import { HodlHodlApi } from '../../class/hodl-hodl-api';
@@ -27,7 +27,17 @@ const HodlApi = new HodlHodlApi();
 export default class HodlHodl extends Component {
   static navigationOptions = ({ navigation }) => ({
     ...BlueNavigationStyle(),
-    title: 'Local Trader (powered by HodlHodl)',
+    title: 'P2P Trader',
+    headerRight: (
+      <TouchableOpacity
+        style={{ marginHorizontal: 16, justifyContent: 'center', alignItems: 'center' }}
+        onPress={() => {
+          Linking.openURL('https://accounts.hodlhodl.com/accounts/sign_in');
+        }}
+      >
+        <Text style={{ color: '#0c2550' }}>Login</Text>
+      </TouchableOpacity>
+    ),
   });
 
   constructor(props) {
@@ -89,15 +99,19 @@ export default class HodlHodl extends Component {
     );
   }
 
+  async fetchMyCountry() {
+    let myCountryCode = await HodlApi.getMyCountryCode();
+    this.setState({
+      myCountryCode,
+      country: myCountryCode,
+    });
+  }
+
   async componentDidMount() {
     console.log('hodlHodl - componentDidMount');
 
     try {
-      let myCountryCode = await HodlApi.getMyCountryCode();
-      this.setState({
-        myCountryCode,
-        country: myCountryCode,
-      });
+      await this.fetchMyCountry();
       await this.fetchOffers();
     } catch (Error) {
       alert(Error.message);
@@ -109,7 +123,9 @@ export default class HodlHodl extends Component {
     });
   }
 
-  _onPress(item) {}
+  _onPress(item) {
+    Linking.openURL('https://hodlhodl.com/offers/' + item.id);
+  }
 
   render() {
     return (
