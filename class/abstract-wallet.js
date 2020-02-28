@@ -133,6 +133,19 @@ export class AbstractWallet {
 
   setSecret(newSecret) {
     this.secret = newSecret.trim();
+
+    try {
+      const parsedSecret = JSON.parse(this.secret);
+      if (parsedSecret && parsedSecret.keystore && parsedSecret.keystore.xpub) {
+        let masterFingerprint = false;
+        if (parsedSecret.keystore.ckcc_xfp) {
+          // It is a ColdCard Hardware Wallet
+          masterFingerprint = Number(parsedSecret.keystore.ckcc_xfp);
+        }
+        this.secret = parsedSecret.keystore.xpub;
+        this.masterFingerprint = masterFingerprint;
+      }
+    } catch (_) {}
     return this;
   }
 
@@ -148,5 +161,9 @@ export class AbstractWallet {
 
   getAddressAsync() {
     return new Promise(resolve => resolve(this.getAddress()));
+  }
+
+  useWithHardwareWalletEnabled() {
+    return false;
   }
 }
