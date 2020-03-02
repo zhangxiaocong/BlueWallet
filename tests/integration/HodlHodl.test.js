@@ -110,7 +110,8 @@ describe('HodlHodl API', function() {
     assert.ok(offers[0].side === HodlHodlApi.FILTERS_SIDE_VALUE_SELL);
     assert.ok(offers[0].title || offers[0].description);
     assert.ok(offers[0].price);
-    assert.ok(offers[0].payment_methods);
+    assert.ok(offers[0].payment_method_instructions);
+    assert.ok(offers[0].trader);
   });
 
   it('can get payment methods', async () => {

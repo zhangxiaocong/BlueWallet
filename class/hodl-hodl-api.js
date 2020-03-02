@@ -36,9 +36,9 @@ export class HodlHodlApi {
   static SORT_BY_VALUE_USER_AVERAGE_RELEASE_TIME_MINUTES = 'user_average_release_time_minutes';
   static SORT_BY_VALUE_RATING = 'rating';
 
-  constructor() {
+  constructor(apiKey = false) {
     this.baseURI = 'https://hodlhodl.com/';
-    this.apiKey = 'cmO8iLFgx9wrxCe9R7zFtbWpqVqpGuDfXR3FJB0PSGCd7EAh3xgG51vBKgNTAF8fEEpS0loqZ9P1fDZt';
+    this.apiKey = apiKey || 'cmO8iLFgx9wrxCe9R7zFtbWpqVqpGuDfXR3FJB0PSGCd7EAh3xgG51vBKgNTAF8fEEpS0loqZ9P1fDZt';
     this._api = new Frisbee({ baseURI: this.baseURI });
   }
 
@@ -65,17 +65,26 @@ export class HodlHodlApi {
 
   async getMyCountryCode() {
     let _api = new Frisbee({ baseURI: 'https://ifconfig.co/' });
-    let response = await _api.get('/country-iso', {
-      headers: { 'Access-Control-Allow-Origin': '*' },
-    });
+    let response;
 
-    let body = response.body;
-    if (typeof body === 'string') body = body.replace('\n', '');
-    if (!body || body.length !== 2) {
-      throw new Error('API failure: ' + JSON.stringify(response));
+    let allowedTries = 5;
+    while (allowedTries > 0) {
+      // this API fails a lot, so lets retry several times
+      response = await _api.get('/country-iso', {
+        headers: { 'Access-Control-Allow-Origin': '*' },
+      });
+
+      let body = response.body;
+      if (typeof body === 'string') body = body.replace('\n', '');
+      if (!body || body.length !== 2) {
+        allowedTries--;
+        await (async () => new Promise(resolve => setTimeout(resolve, 2000)))(); // sleep
+      } else {
+        return (this._myCountryCode = body);
+      }
     }
 
-    return (this._myCountryCode = body);
+    throw new Error('API failure: ' + JSON.stringify(response));
   }
 
   async getPaymentMethods(country) {
