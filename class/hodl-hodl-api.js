@@ -84,7 +84,7 @@ export class HodlHodlApi {
       }
     }
 
-    throw new Error('API failure: ' + JSON.stringify(response));
+    throw new Error('API failure after several tries: ' + JSON.stringify(response));
   }
 
   async getPaymentMethods(country) {
@@ -96,6 +96,17 @@ export class HodlHodlApi {
     }
 
     return (this._payment_methods = json.payment_methods);
+  }
+
+  async getCurrencies() {
+    let response = await this._api.get('/api/v1/currencies', this._getHeaders());
+
+    let json = response.body;
+    if (!json || !json.currencies || json.status === 'error') {
+      throw new Error('API failure: ' + JSON.stringify(response));
+    }
+
+    return (this._currencies = json.currencies);
   }
 
   async getOffers(pagination = {}, filters = {}, sort = {}) {

@@ -122,4 +122,13 @@ describe('HodlHodl API', function() {
     assert.ok(methods[0].type);
     assert.ok(methods[0].name);
   });
+
+  it('cat get currencies', async () => {
+    let Hodl = new HodlHodlApi();
+    const currencies = await Hodl.getCurrencies();
+    assert.ok(currencies[0]);
+    assert.ok(currencies[0].code);
+    assert.ok(currencies[0].name);
+    assert.ok(currencies[0].type);
+  });
 });
