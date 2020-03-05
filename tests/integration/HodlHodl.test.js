@@ -1,4 +1,4 @@
-/* global it, describe */
+/* global it, jasmine, describe */
 import { LegacyWallet, SegwitBech32Wallet, SegwitP2SHWallet } from '../../class';
 import { HodlHodlApi } from '../../class/hodl-hodl-api';
 
@@ -73,6 +73,7 @@ it('can create escrow address', () => {
 
 describe('HodlHodl API', function() {
   it('can fetch countries & and own country code', async () => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 200 * 1000;
     let Hodl = new HodlHodlApi();
     const countries = await Hodl.getCountries();
     assert.ok(countries[0]);

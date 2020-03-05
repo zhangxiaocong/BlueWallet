@@ -446,6 +446,15 @@ export default class HodlHodl extends Component {
       <Modal
         isVisible={this.state.isFiltersModalVisible}
         style={styles.bottomModal}
+        onModalHide={() => {
+          if (this.state.openNextModal) {
+            const openNextModal = this.state.openNextModal;
+            this.setState({
+              openNextModal: false,
+              [openNextModal]: true,
+            });
+          }
+        }}
         onBackdropPress={() => {
           Keyboard.dismiss();
           this.setState({ isFiltersModalVisible: false });
@@ -467,8 +476,10 @@ export default class HodlHodl extends Component {
                         <TouchableOpacity
                           style={{ color: 'gray', right: 0, position: 'absolute' }}
                           onPress={() => {
-                            if (item.code === 'currency') this.setState({ isFiltersModalVisible: false, isChooseCurrencyVisible: true });
-                            if (item.code === 'method') this.setState({ isFiltersModalVisible: false, isChooseMethodVisible: true });
+                            if (item.code === 'currency')
+                              this.setState({ isFiltersModalVisible: false, openNextModal: 'isChooseCurrencyVisible' });
+                            if (item.code === 'method')
+                              this.setState({ isFiltersModalVisible: false, openNextModal: 'isChooseMethodVisible' });
                           }}
                         >
                           {item.code === 'currency' && (
